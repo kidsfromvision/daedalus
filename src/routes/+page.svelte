@@ -9,7 +9,7 @@
 	<h1>Components</h1>
 	<ButtonLight>Light Button</ButtonLight>
 	<ButtonDark>Dark Button</ButtonDark>
-	<Input placeholder="Placeholder">
+	<Input placeholder="john@example.com" type="email" autocomplete="email">
 		<ButtonIcon>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
