@@ -1,0 +1,12 @@
+/cli/target
+/demo/.DS_Store
+/demo/node_modules
+/demo/build
+/demo/dist
+/demo/.svelte-kit
+/demo/package
+/demo/.env
+/demo/.env.*
+/demo/!.env.example
+/demo/vite.config.js.timestamp-*
+/demo/vite.config.ts.timestamp-*
