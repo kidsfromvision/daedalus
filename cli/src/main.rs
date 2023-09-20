@@ -1,21 +1,49 @@
-mod generator;
-use generator::{GenerateArgs, GenerateType, generate_component};
-use clap::Parser;
-
-#[derive(Parser)] // Derive the Parser trait for argument parsing
-#[clap(name = "daedalus", version = "1.0", author = "Sam Brownstone brownstone@hey.com")]
-enum DaedalusCli {
-    #[clap(alias = "g")]
-    Generate(GenerateArgs),
-}
+mod components;
+use components::*;
+use clap::{Command};
 
 #[tokio::main]
 async fn main() {
-    match DaedalusCli::parse() {
-        DaedalusCli::Generate(args) => {
-            match args.item_type {
-                GenerateType::Component => generate_component(args.item_name).await,
-            };
-        }
-    }
+	let cli = Command::new("daedalus")
+		.about("A CLI tool to manage your Daedalus components")
+		.author("Sam Brownstone brownstone@hey.com")
+		.version("1.0")
+		.subcommand_required(true)
+		.subcommand(
+			Command::new("generate")
+				.about("Generate a new entity")
+				.alias("g")
+				.subcommand_required(true)
+				.subcommand(
+						Command::new("component")
+						.about("Generate a new component")
+						.alias("c")
+						.subcommand_required(true)
+						.subcommand(button_command())
+				)
+		);
+
+	match cli.get_matches().subcommand() {
+		Some(("generate", sub_matches)) => {
+			match sub_matches.subcommand() {
+				Some(("component", sub_matches)) => {
+					match sub_matches.subcommand() {
+						Some(("button", sub_matches)) => {
+							let variant = sub_matches
+								.get_many::<String>("variant")
+								.expect("contains_id")
+								.map(|s| s.as_str())
+								.collect::<String>();
+
+							// TODO: add --dir option to specify output directory
+							components::write_button(variant).await;
+						}
+						_ => unreachable!()
+					}
+				}
+				_ => unreachable!()
+			}
+		}
+		_ => unreachable!()
+	}
 }
